@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<br>
+<table class="ui celled table">
+  <thead>
+    <tr>
+      <th>Rank</th>
+      <th>Team name</th>
+      <th>Wins</th>
+      <th>Losses</th>
+      <th>Draws</th>
+      <th>Points</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for team in leaderboard %}
+      <tr>
+        <td data-label="Rank">{{team.rank}}</td>
+        <td data-label="Team name">{{team.team_name}}</td>
+        <td data-label="Wins">{{team.wins}}</td>
+        <td data-label="Losses">{{team.losses}}</td>
+        <td data-label="Draws">{{team.draws}}</td>
+        <td data-label="Points">{{team.points}}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock content %}
