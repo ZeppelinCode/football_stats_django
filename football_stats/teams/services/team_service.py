@@ -1,40 +1,51 @@
 from matches.models import Outcome
 from django.db.models import Count
-from typing import List, Tuple
-from teams.services.domain import TeamRepresentation, init_team, TeamsStats
+from teams.services.domain import (
+    TeamRepresentation, init_team, TeamsStatsName, TeamStatsId)
 from django.core.cache import cache
+from typing import List
 
 
+# Public API
 def get_leaderboard() -> List[TeamRepresentation]:
     """
     Returns a sorted list of all teams by points.
     """
-    return _get_cached_value('leaderboard')
+    return get_cached_value('leaderboard')
 
 
 def get_teams_by_name_similarity(name: str) -> List[TeamRepresentation]:
-    team_stats = _get_cached_value('team_stats')
-    return [team_representation
-            for team_name, team_representation
-            in team_stats.items()
-            if name in team_name]
+    team_stats = get_cached_value('team_stats_name')
+    similar = {team_name: team_representation
+               for team_name, team_representation
+               in team_stats.items()
+               if name in team_name}
+    return calculate_leaderboard(similar)
 
 
-def _get_cached_value(key: str):
+def get_team(team_id: int) -> TeamRepresentation:
+    team_stats = get_cached_value('team_stats_id')
+    return team_stats[team_id]
+
+
+# Private helpers
+def get_cached_value(key: str):
     value = cache.get(key)
     if value is None:
-        cache_contents = _reaload_cache()
+        cache_contents = reaload_cache()
         return cache_contents[key]
 
     return value
 
 
-def _reaload_cache() -> dict:
-    team_stats = build_team_stats(get_all_outcomes())
-    leaderboard = calculate_leaderboard(team_stats)
+def reaload_cache() -> dict:
+    team_stats_name = build_team_stats_name(get_all_outcomes())
+    leaderboard = calculate_leaderboard(team_stats_name)
     add_rank_to_team_stats(leaderboard)
+    team_stats_id = build_team_stats_id(team_stats_name)
     cache_contents = {
-        'team_stats': team_stats,
+        'team_stats_name': team_stats_name,
+        'team_stats_id': team_stats_id,
         'leaderboard': leaderboard
     }
 
@@ -55,11 +66,12 @@ def get_all_outcomes():
     ).annotate(outcome_type_count=Count('outcome_type'))
 
 
-def build_team_stats(outcomes) -> TeamsStats:
+def build_team_stats_name(outcomes) -> TeamsStatsName:
     """
-    Builds structured classes out of a database aggregate.
+    Builds structured classes out of a database aggregate and stores them
+    in a team_name -> TeamRepresentation dictionary.
     """
-    team_performances: TeamsStats = {}
+    team_performances: TeamsStatsName = {}
     for outcome in outcomes:
         team_name = outcome['team__team_name']
         team_performance = team_performances.get(
@@ -73,8 +85,19 @@ def build_team_stats(outcomes) -> TeamsStats:
     return team_performances
 
 
+def build_team_stats_id(stats: TeamsStatsName) -> TeamStatsId:
+    """
+    Builds a team_id -> TeamRepresentation dictionary from a
+    team_name -> TeamRepresentation dictionary.
+    """
+    id_to_representation_dict = {}
+    for team_representation in stats.values():
+        id_to_representation_dict[team_representation.id] = team_representation
+    return id_to_representation_dict
+
+
 def calculate_leaderboard(
-    teams_stats: TeamsStats
+    teams_stats: TeamsStatsName
 ) -> List[TeamRepresentation]:
     """
     Sorts teams by points.
@@ -85,7 +108,7 @@ def calculate_leaderboard(
         reverse=True)
 
 
-def calculate_and_add_points(team_performances: TeamsStats):
+def calculate_and_add_points(team_performances: TeamsStatsName):
     """
     Mutates each team representation by calculating the
     points based on the number of wins raws the team has.
@@ -105,4 +128,4 @@ def add_rank_to_team_stats(leaderboard: List[TeamRepresentation]):
 
 
 # Warm up the cache at startup..
-_reaload_cache()
+reaload_cache()

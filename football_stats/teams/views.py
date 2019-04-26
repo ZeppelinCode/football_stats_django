@@ -1,8 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpRequest
-from teams.models import Team
 from teams.services.team_service import (
-    get_leaderboard, get_teams_by_name_similarity)
+    get_leaderboard, get_teams_by_name_similarity, get_team)
 from typing import List
 from teams.services.domain import TeamRepresentation
 
@@ -22,10 +21,6 @@ def team_search(request: HttpRequest):
     return render(request, 'teams/search.html', {'teams': teams})
 
 
-def team(request: HttpRequest, id):
-    # outcomes = Outcome.objects.filter(
-    #     'team__team_name',
-    #     'team_id',
-    #     'outcome_type'
-    # ).annotate(outcome_type_count=Count('outcome_type'))
-    return render(request, 'teams/team.html')
+def team(request: HttpRequest, team_id: int):
+    team = get_team(team_id)
+    return render(request, 'teams/team.html', {'team': team})
