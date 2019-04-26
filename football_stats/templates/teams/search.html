@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<br>
+<form class="ui form" action="{% url 'team_search' %}" method="get">
+  <div class="ui field">
+      <label>Team</label>
+      <input type="text" name="team" placeholder="Team ...">
+    </div>
+
+  <button class="ui button" type="submit">Search</button>
+</form>
+
+<div class="ui list">
+  {% for team in teams %}
+    <a class="item" href="{% url 'team' team.id %}">{{team.team_name}}</a>
+  {% endfor %}
+</div>
+
+{% endblock content %}

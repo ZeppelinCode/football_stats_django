@@ -4,8 +4,8 @@
     <a class="toc item">
       <i class="sidebar icon"></i>
     </a>
-    <a class="active item">Leaderboard</a>
-      <a class="item">Search</a>
+      <a class="{% if '/' == request.path %}active{% endif %} item" href="{% url 'leaderboard' %}">Leaderboard</a>
+      <a class="{% if '/team/search' == request.path %}active{% endif %} item" href="{% url 'team_search' %}">Search</a>
       <a class="item">Upcomming</a>
       <a class="item">Season</a>
   </div>
@@ -14,8 +14,8 @@
 <!-- Floating Navigation-->
 <div class="ui large top fixed hidden menu">
   <div class="ui container">
-    <a class="active item">Leaderboard</a>
-    <a class="item">Search</a>
+    <a class="{% if '/' == request.path %}active{% endif %} item" href="{% url 'leaderboard' %}">Leaderboard</a>
+    <a class="{% if '/team/search' == request.path %}active{% endif %} item" href="{% url 'team_search' %}">Search</a>
     <a class="item">Upcomming</a>
     <a class="item">Season</a>
   </div>
@@ -23,8 +23,8 @@
 
 <!-- Sidebar Menu -->
 <div class="ui vertical inverted sidebar menu">
-  <a class="active item">Leaderboard</a>
-  <a class="item">Search</a>
+  <a class="{% if '/' == request.path %}active{% endif %} item" href="{% url 'leaderboard' %}">Leaderboard</a>
+  <a class="{% if '/team/search' == request.path %}active{% endif %} item" href="{% url 'team_search' %}">Search</a>
   <a class="item">Upcomming</a>
   <a class="item">Season</a>
 </div>

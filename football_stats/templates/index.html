@@ -17,7 +17,9 @@
     {% for team in leaderboard %}
       <tr>
         <td data-label="Rank">{{forloop.counter}}</td>
-        <td data-label="Team name">{{team.team_name}}</td>
+        <td data-label="Team name">
+          <a href="{% url 'team' team.team_id %}">{{team.team_name}}</a>
+        </td>
         <td data-label="Wins">{{team.win}}</td>
         <td data-label="Losses">{{team.loss}}</td>
         <td data-label="Draws">{{team.draw}}</td>
