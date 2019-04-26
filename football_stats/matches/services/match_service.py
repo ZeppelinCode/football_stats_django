@@ -5,26 +5,28 @@ from typing import List, Dict
 
 
 def get_all_matches_for_team(team_id: int) -> List[MatchInfo]:
-    all_goals = Goal.objects \
-        .select_related('match') \
-        .filter(Q(match__team_1=team_id) | Q(match__team_2=team_id)) \
-        .select_related('team') \
-        .select_related('match__location')
+    all_matches = Match.objects \
+        .select_related('location') \
+        .filter(Q(team_1__id=team_id) | Q(team_2__id=team_id)) \
+        .select_related('team_1') \
+        .select_related('team_2')
 
-    matches: Dict[int, MatchInfo] = {}
-    for goal in all_goals:
-        match_info = matches.get(
-            goal.match_id,
-            MatchInfo(
-                match=goal.match,
-                goals_team_1=[],
-                goals_team_2=[]
-            ))
+    matches = {match.id: MatchInfo(
+        match=match,
+        goals_team_1=[],
+        goals_team_2=[])
+        for match in all_matches}
+
+    goals = Goal.objects.filter(match_id__in=matches.keys())
+    for goal in goals:
+        match_info = matches[goal.match_id]
+        if match_info is None:
+            continue
+
         if goal.team_id == match_info.match.team_1_id:
             match_info.goals_team_1.append(goal)
         else:
             match_info.goals_team_2.append(goal)
-        matches[goal.match_id] = match_info
 
     return sorted(
         matches.values(),
