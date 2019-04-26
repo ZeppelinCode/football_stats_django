@@ -120,14 +120,20 @@ def insert_goals_into_database(
             all_goals.append(goal)
 
         if score_team1 > score_team2:
-            all_outcomes.append(Outcome(team=team1, outcome='win'))
-            all_outcomes.append(Outcome(team=team2, outcome='loss'))
+            all_outcomes.append(
+                Outcome(match=match, team=team1, outcome='win'))
+            all_outcomes.append(
+                Outcome(match=match, team=team2, outcome='loss'))
         elif score_team1 < score_team2:
-            all_outcomes.append(Outcome(team=team1, outcome='loss'))
-            all_outcomes.append(Outcome(team=team2, outcome='win'))
+            all_outcomes.append(
+                Outcome(match=match, team=team1, outcome='loss'))
+            all_outcomes.append(
+                Outcome(match=match, team=team2, outcome='win'))
         else:
-            all_outcomes.append(Outcome(team=team1, outcome='draw'))
-            all_outcomes.append(Outcome(team=team2, outcome='draw'))
+            all_outcomes.append(
+                Outcome(match=match, team=team1, outcome='draw'))
+            all_outcomes.append(
+                Outcome(match=match, team=team2, outcome='draw'))
 
     Goal.objects.bulk_create(all_goals)
     Outcome.objects.bulk_create(all_outcomes)

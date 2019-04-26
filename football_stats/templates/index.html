@@ -16,11 +16,11 @@
   <tbody>
     {% for team in leaderboard %}
       <tr>
-        <td data-label="Rank">{{team.rank}}</td>
+        <td data-label="Rank">{{forloop.counter}}</td>
         <td data-label="Team name">{{team.team_name}}</td>
-        <td data-label="Wins">{{team.wins}}</td>
-        <td data-label="Losses">{{team.losses}}</td>
-        <td data-label="Draws">{{team.draws}}</td>
+        <td data-label="Wins">{{team.win}}</td>
+        <td data-label="Losses">{{team.loss}}</td>
+        <td data-label="Draws">{{team.draw}}</td>
         <td data-label="Points">{{team.points}}</td>
       </tr>
     {% endfor %}

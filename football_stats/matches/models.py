@@ -49,8 +49,9 @@ class Goal(models.Model):
 
 
 class Outcome(models.Model):
+    match = models.ForeignKey(Match, on_delete=models.PROTECT)
     team = models.ForeignKey(Team, on_delete=models.PROTECT)
-    outcome = models.CharField(max_length=4)
+    outcome_type = models.CharField(max_length=4)
 
     class Meta:
         constraints = [
@@ -58,3 +59,6 @@ class Outcome(models.Model):
                 check=models.Q(outcome__in=['win', 'loss', 'draw']),
                 name='chk_outcome')
         ]
+
+    def __str__(self):
+        return "{}:{}".format(self.team.team_name, self.outcome)
