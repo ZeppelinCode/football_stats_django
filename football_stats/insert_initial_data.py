@@ -4,14 +4,14 @@ import traceback
 
 try:
     teams = team_downloader.pull_info_for_all_teams(2018)
-    team_downloader.insert_into_database(teams)
-except Exception as e:
-    traceback.print_exc()
+    teams_id_map = team_downloader.insert_into_database(teams)
 
-
-try:
     matches = match_downloader.pull_info_for_all_matches(2018)
+
     locations_id_map = match_downloader.insert_locations_into_database(matches)
-    match_downloader.insert_matches_into_database(matches, locations_id_map)
+    matches_id_map = match_downloader.insert_matches_into_database(
+        matches, locations_id_map, teams_id_map)
+    match_downloader.insert_goals_into_database(
+        matches, matches_id_map, teams_id_map)
 except Exception as e:
     traceback.print_exc()
