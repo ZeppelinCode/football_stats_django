@@ -1,31 +1,6 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<br>
-<table class="ui celled table">
-  <thead>
-    <tr>
-      <th>Rank</th>
-      <th>Team name</th>
-      <th>Wins</th>
-      <th>Losses</th>
-      <th>Draws</th>
-      <th>Points</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for team in leaderboard %}
-      <tr>
-        <td data-label="Rank">{{forloop.counter}}</td>
-        <td data-label="Team name">
-          <a href="{% url 'team' team.team_id %}">{{team.team_name}}</a>
-        </td>
-        <td data-label="Wins">{{team.win}}</td>
-        <td data-label="Losses">{{team.loss}}</td>
-        <td data-label="Draws">{{team.draw}}</td>
-        <td data-label="Points">{{team.points}}</td>
-      </tr>
-    {% endfor %}
-  </tbody>
-</table>
+  <br>
+  {% include 'partials/_teams.html' %}
 {% endblock content %}

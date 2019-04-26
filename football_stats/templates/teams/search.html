@@ -12,9 +12,7 @@
 </form>
 
 <div class="ui list">
-  {% for team in teams %}
-    <a class="item" href="{% url 'team' team.id %}">{{team.team_name}}</a>
-  {% endfor %}
+  {% include 'partials/_teams.html' %}
 </div>
 
 {% endblock content %}

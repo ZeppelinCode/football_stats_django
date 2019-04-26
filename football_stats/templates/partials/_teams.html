@@ -1,0 +1,26 @@
+<table class="ui celled table">
+  <thead>
+    <tr>
+      <th>Rank</th>
+      <th>Team name</th>
+      <th>Wins</th>
+      <th>Losses</th>
+      <th>Draws</th>
+      <th>Points</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for team in teams %}
+      <tr>
+        <td data-label="Rank">{{team.rank}}</td>
+        <td data-label="Team name">
+          <a href="{% url 'team' team.id %}">{{team.team_name}}</a>
+        </td>
+        <td data-label="Wins">{{team.win}}</td>
+        <td data-label="Losses">{{team.loss}}</td>
+        <td data-label="Draws">{{team.draw}}</td>
+        <td data-label="Points">{{team.points}}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>

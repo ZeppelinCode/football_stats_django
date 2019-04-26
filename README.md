@@ -9,3 +9,6 @@ delete from matches_location;
 delete from matches_match;
 delete from matches_goal;
 delete from matches_outcome;
+
+
+docker run --name my-memcache -d -p 11211:11211 memcached
