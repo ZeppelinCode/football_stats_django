@@ -2,27 +2,72 @@
 
 {% block content %}
 <br>
-<h1>{{team.team_name}}</h1>
-<table class="ui very basic table celled collapsing compact">
-  <thead>
-    <tr>
-      <th>Rank</th>
-      <th>Wins</th>
-      <th>Losses</th>
-      <th>Draws</th>
-      <th>Points</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>{{team.rank}}</td>
-      <td>{{team.win}}</td>
-      <td>{{team.loss}}</td>
-      <td>{{team.draw}}</td>
-      <td>{{team.points}}</td>
-    </tr>
-  </tbody>
-</table>
+<h1 class="header centered">{{team.team_name}}</h1>
+<br>
+<div class="ui grid centered">
+  <table class="ui very basic table celled collapsing compact">
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Wins</th>
+        <th>Losses</th>
+        <th>Draws</th>
+        <th>Points</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{team.rank}}</td>
+        <td>{{team.win}}</td>
+        <td>{{team.loss}}</td>
+        <td>{{team.draw}}</td>
+        <td>{{team.points}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<br>
 
-<h2>Matches</h2>
+<h2 class="header centered">Matches</h2>
+<div class="ui divider"></div>
+{% for match_info in matches %}
+  {% comment %} Teams {% endcomment %}
+  <div class="ui two column grid">
+    <div class="ui column">
+      <h3 class="header centered">
+        {{match_info.match.team_1.team_name}}
+      </h3>
+    </div>
+    <div class="ui column">
+      <h3 class="header centered">
+        {{match_info.match.team_2.team_name}}
+      </h3>
+    </div>
+  </div>
+
+  <h4 class="header centered">
+    {{match_info.match.location.stadium}}, {{match_info.match.location.city}}
+  </h4>
+
+  <div class="centered">
+    {{match_info.match.match_time_utc}}
+  </div>
+  <br>
+
+  <div class="ui two column grid">
+    <div class="ui column centered">
+      {% for goal in match_info.goals_team_1 %}
+        {{goal.goal_getter_name}} - {{goal.match_minute}}'
+        <br>
+      {% endfor %} 
+    </div>
+    <div class="ui column centered">
+      {% for goal in match_info.goals_team_2 %}
+        {{goal.goal_getter_name}} - {{goal.match_minute}}'
+        <br>
+      {% endfor %} 
+    </div>
+  </div>
+  <div class="ui divider"></div>
+{% endfor %}
 {% endblock content %}

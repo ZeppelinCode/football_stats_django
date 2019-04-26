@@ -31,7 +31,7 @@ class Match(models.Model):
         ]
 
     def __str__(self) -> str:
-        return str(self.team_name)
+        return "{}:{}".format(str(self.team_1.team_name), str(self.team_2.team_name))
 
 
 class Goal(models.Model):

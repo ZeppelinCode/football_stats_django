@@ -4,6 +4,7 @@ from teams.services.team_service import (
     get_leaderboard, get_teams_by_name_similarity, get_team)
 from typing import List
 from teams.services.domain import TeamRepresentation
+from matches.services.match_service import get_all_matches_for_team
 
 # Create your views here.
 
@@ -23,4 +24,5 @@ def team_search(request: HttpRequest):
 
 def team(request: HttpRequest, team_id: int):
     team = get_team(team_id)
-    return render(request, 'teams/team.html', {'team': team})
+    matches = get_all_matches_for_team(team_id)
+    return render(request, 'teams/team.html', {'team': team, 'matches': matches})
