@@ -70,4 +70,19 @@
   </div>
   <div class="ui divider"></div>
 {% endfor %}
+
+<div class="ui grid centered" style="margin-bottom: 40px; margin-top: 40px">
+  <div class="ui pagination menu">
+    {% if paginator.has_previous %}
+      <a href="" class="item">Prev</a>
+    {% endif %}
+    {% for page in page_range %}
+      <a href="" class="item {% if page == paginator.number %}active{% endif %}">{{page}}</a>
+    {% endfor %}
+    {% if paginator.has_next %}
+      <a href="" class="item">Next</a>
+    {% endif %}
+  </div>
+</div>
+
 {% endblock content %}

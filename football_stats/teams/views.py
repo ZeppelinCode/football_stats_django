@@ -24,5 +24,15 @@ def team_search(request: HttpRequest):
 
 def team(request: HttpRequest, team_id: int):
     team = get_team(team_id)
-    matches = get_all_matches_for_team(team_id)
-    return render(request, 'teams/team.html', {'team': team, 'matches': matches})
+    matches, paginator = get_all_matches_for_team(team_id, 3)
+    print(paginator.__dict__)
+    return render(
+        request,
+        'teams/team.html',
+        {
+            'team': team,
+            'matches': matches,
+            'paginator': paginator,
+            'page_range': range(1, paginator.paginator.num_pages + 1)
+        }
+    )
