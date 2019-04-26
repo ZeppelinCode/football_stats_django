@@ -1,5 +1,4 @@
 from django.db import models
-from django.utils import timezone
 from teams.models import Team
 
 
@@ -47,3 +46,15 @@ class Goal(models.Model):
             self.match_id,
             str(self.goal_getter_name),
             self.match_minute)
+
+
+class Outcome(models.Model):
+    team = models.ForeignKey(Team, on_delete=models.PROTECT)
+    outcome = models.CharField(max_length=4)
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                check=models.Q(outcome__in=['win', 'loss', 'draw']),
+                name='chk_outcome')
+        ]

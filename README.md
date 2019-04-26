@@ -8,3 +8,4 @@ delete from teams_team;
 delete from matches_location;
 delete from matches_match;
 delete from matches_goal;
+delete from matches_outcome;

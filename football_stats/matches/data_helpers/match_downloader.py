@@ -1,7 +1,7 @@
 import requests
 from typing import List, Dict, Any, Generator, Tuple
 from matches.data_helpers.matches_cache import matches
-from matches.models import Match, Location, Goal
+from matches.models import Match, Location, Goal, Outcome
 from teams.models import Team
 from itertools import groupby
 
@@ -90,6 +90,7 @@ def insert_goals_into_database(
     raw_team_to_model_team: Dict[int, Team],
 ):
     all_goals = []
+    all_outcomes = []
     for raw_match in raw_matches:
 
         raw_goals = raw_match['Goals']
@@ -98,14 +99,17 @@ def insert_goals_into_database(
         match = raw_matches_to_model_matches[raw_match['MatchID']]
 
         score_team1 = 0
+        score_team2 = 0
         for raw_goal in raw_goals:
             scoring_team = None
             new_score_team1 = raw_goal['ScoreTeam1']
+            new_score_team2 = raw_goal['ScoreTeam2']
             if new_score_team1 > score_team1:
                 scoring_team = team1
                 score_team1 = new_score_team1
             else:
                 scoring_team = team2
+                score_team2 = new_score_team2
 
             goal = Goal(
                 external_id=raw_goal['GoalID'],
@@ -115,4 +119,15 @@ def insert_goals_into_database(
                 team=scoring_team)
             all_goals.append(goal)
 
+        if score_team1 > score_team2:
+            all_outcomes.append(Outcome(team=team1, outcome='win'))
+            all_outcomes.append(Outcome(team=team2, outcome='loss'))
+        elif score_team1 < score_team2:
+            all_outcomes.append(Outcome(team=team1, outcome='loss'))
+            all_outcomes.append(Outcome(team=team2, outcome='win'))
+        else:
+            all_outcomes.append(Outcome(team=team1, outcome='draw'))
+            all_outcomes.append(Outcome(team=team2, outcome='draw'))
+
     Goal.objects.bulk_create(all_goals)
+    Outcome.objects.bulk_create(all_outcomes)
