@@ -1,18 +1,8 @@
-import requests
-from typing import List, Dict, Any, Generator, Tuple
-from matches.data_helpers.matches_cache import matches
-from matches.models import Match, Location, Goal, Outcome
+from typing import List, Dict, Any
+from matches.models import (Match, Location, Goal,
+                            Outcome, MatchDayMetadata)
 from teams.models import Team
 from itertools import groupby
-
-
-def pull_info_for_all_matches(year: int) -> List[Dict[Any, Any]]:
-    # url = 'https://www.openligadb.de/api/getmatchdata/bl1/{}'.format(year)
-    # headers = {'Content-Type': 'application/json'}
-    # response = requests.get(url, headers=headers)
-
-    # return response.json()
-    return matches
 
 
 def extract_locations(
@@ -65,6 +55,7 @@ def raw_match_to_match_model(
         match_time_utc=raw_match['MatchDateTimeUTC'],
         league_name=raw_match['LeagueName'],
         location=match_location,
+        matchday=raw_match['Group']['GroupOrderID'],
         viewers=raw_match['NumberOfViewers'],
         last_update=raw_match['LastUpdateDateTime'],
         finished=raw_match['MatchIsFinished'],
@@ -121,19 +112,30 @@ def insert_goals_into_database(
 
         if score_team1 > score_team2:
             all_outcomes.append(
-                Outcome(match=match, team=team1, outcome='win'))
+                Outcome(match=match, team=team1, outcome_type='win'))
             all_outcomes.append(
-                Outcome(match=match, team=team2, outcome='loss'))
+                Outcome(match=match, team=team2, outcome_type='loss'))
         elif score_team1 < score_team2:
             all_outcomes.append(
-                Outcome(match=match, team=team1, outcome='loss'))
+                Outcome(match=match, team=team1, outcome_type='loss'))
             all_outcomes.append(
-                Outcome(match=match, team=team2, outcome='win'))
+                Outcome(match=match, team=team2, outcome_type='win'))
         else:
             all_outcomes.append(
-                Outcome(match=match, team=team1, outcome='draw'))
+                Outcome(match=match, team=team1, outcome_type='draw'))
             all_outcomes.append(
-                Outcome(match=match, team=team2, outcome='draw'))
+                Outcome(match=match, team=team2, outcome_type='draw'))
 
     Goal.objects.bulk_create(all_goals)
     Outcome.objects.bulk_create(all_outcomes)
+
+
+def insert_matchday_info(
+    current_group,
+    last_change: str
+):
+    matchday = current_group['GroupOrderID']
+    MatchDayMetadata.objects.create(
+        matchday=matchday,
+        last_update=last_change
+    )

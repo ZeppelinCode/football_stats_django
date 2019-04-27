@@ -4,7 +4,7 @@
 __pycache__/
 .mypy_cache/
 football_stats/football_stats/local_settings.py
-football_stats/matches/data_helpers/matches_cache.py
+football_stats/matches/providers/matches_cache.py
 db.sqlite3
 media
 .vscode

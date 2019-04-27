@@ -27,6 +27,7 @@ class Match(models.Model):
     viewers = models.IntegerField(null=True)
     last_update = models.DateTimeField(null=True)
     finished = models.BooleanField(default=False)
+    matchday = models.IntegerField(null=True)
     team_1 = models.ForeignKey(
         Team, on_delete=models.PROTECT, related_name='fk_team_1')
     team_2 = models.ForeignKey(
@@ -70,3 +71,17 @@ class Outcome(models.Model):
 
     def __str__(self):
         return "{}:{}".format(self.team.team_name, self.outcome)
+
+
+class MatchDayMetadata(models.Model):
+    current_matchday = models.IntegerField()
+    last_update = models.DateTimeField()
+
+    def __str__(self):
+        return "day: {} last_update:{}".format(
+            self.current_matchday,
+            self.last_update
+        )
+
+    class Meta:
+        db_table = "matches_matchday_metadata"

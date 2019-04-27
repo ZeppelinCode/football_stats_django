@@ -41,3 +41,6 @@ def truncated_page_range(page: int, paginator: Paginator):
 
     yield '..'
     yield num_pages
+
+# https://www.openligadb.de/api/getmatchdata/bl1/2018/30
+# https://www.openligadb.de/api/getlastchangedate/bl1/2018/31
