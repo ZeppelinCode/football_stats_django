@@ -25,4 +25,4 @@ def pull_current_matchday_last_change(year: int, matchday: int):
     )
     headers = {'Content-Type': 'application/json'}
     response = requests.get(url, headers=headers)
-    return response.text
+    return response.json()

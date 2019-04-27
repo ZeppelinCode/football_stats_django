@@ -5,26 +5,16 @@
       <i class="sidebar icon"></i>
     </a>
       <a class="{% if '/' == request.path %}active{% endif %} item" href="{% url 'leaderboard' %}">Leaderboard</a>
-      <a class="{% if '/team/search' == request.path %}active{% endif %} item" href="{% url 'team_search' %}">Search</a>
-      <a class="item">Upcomming</a>
-      <a class="{% if 'season' in request.path %}active{% endif %} item" href="{% url 'season' %}">Season</a>
-  </div>
-</div>
-
-<!-- Floating Navigation-->
-<div class="ui large top fixed hidden menu">
-  <div class="ui container">
-    <a class="{% if '/' == request.path %}active{% endif %} item" href="{% url 'leaderboard' %}">Leaderboard</a>
-    <a class="{% if '/team/search' == request.path %}active{% endif %} item" href="{% url 'team_search' %}">Search</a>
-    <a class="item">Upcomming</a>
-    <a class="{% if 'season' in request.path %}active{% endif %} item" href="{% url 'season' %}">Season</a>
+      <a class="{% if '/team/search' == request.path %}active{% endif %} item" href="{% url 'team_search' %}">Team Search</a>
+      <a class="{% if '/season/upcomming-matches' == request.path %}active{% endif %} item" href="{% url 'upcomming_matches' %}">Upcomming matches</a>
+      <a class="{% if 'season/matches' in request.path %}active{% endif %} item" href="{% url 'season' %}">All Matches</a>
   </div>
 </div>
 
 <!-- Sidebar Menu -->
 <div class="ui vertical inverted sidebar menu">
   <a class="{% if '/' == request.path %}active{% endif %} item" href="{% url 'leaderboard' %}">Leaderboard</a>
-  <a class="{% if '/team/search' == request.path %}active{% endif %} item" href="{% url 'team_search' %}">Search</a>
-  <a class="item">Upcomming</a>
-  <a class="{% if 'season' in request.path %}active{% endif %} item" href="{% url 'season' %}">Season</a>
+  <a class="{% if '/team/search' == request.path %}active{% endif %} item" href="{% url 'team_search' %}">Team Search</a>
+  <a class="{% if '/season/upcomming-matches' == request.path %}active{% endif %} item" href="{% url 'upcomming_matches' %}">Upcomming matches</a>
+  <a class="{% if 'season/matches' in request.path %}active{% endif %} item" href="{% url 'season' %}">All Matches</a>
 </div>

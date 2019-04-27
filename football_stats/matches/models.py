@@ -25,7 +25,7 @@ class Match(models.Model):
     league_name = models.CharField(max_length=255, null=True)
     location = models.ForeignKey(Location, on_delete=models.PROTECT, null=True)
     viewers = models.IntegerField(null=True)
-    last_update = models.DateTimeField(null=True)
+    last_update_utc = models.DateTimeField(null=True)
     finished = models.BooleanField(default=False)
     matchday = models.IntegerField(null=True)
     team_1 = models.ForeignKey(
@@ -65,8 +65,8 @@ class Outcome(models.Model):
     class Meta:
         constraints = [
             models.CheckConstraint(
-                check=models.Q(outcome__in=['win', 'loss', 'draw']),
-                name='chk_outcome')
+                check=models.Q(outcome_type__in=['win', 'loss', 'draw']),
+                name='chk_outcome_type')
         ]
 
     def __str__(self):
@@ -74,12 +74,12 @@ class Outcome(models.Model):
 
 
 class MatchDayMetadata(models.Model):
-    current_matchday = models.IntegerField()
+    matchday = models.IntegerField()
     last_update = models.DateTimeField()
 
     def __str__(self):
         return "day: {} last_update:{}".format(
-            self.current_matchday,
+            self.matchday,
             self.last_update
         )
 

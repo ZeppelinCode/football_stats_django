@@ -18,3 +18,12 @@ def get_all_season_matches(request: HttpRequest):
             'page_range': get_page_range(page, paginator)
         }
     )
+
+
+def get_upcomming_matches(request: HttpRequest):
+    upcomming_matches = ms.get_upcomming_matches()
+    return render(
+        request,
+        'matches/upcomming.html',
+        {'matches': upcomming_matches}
+    )

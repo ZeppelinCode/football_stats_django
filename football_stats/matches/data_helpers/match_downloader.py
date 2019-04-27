@@ -1,8 +1,10 @@
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 from matches.models import (Match, Location, Goal,
                             Outcome, MatchDayMetadata)
 from teams.models import Team
 from itertools import groupby
+from pytz import timezone
+from datetime import datetime
 
 
 def extract_locations(
@@ -57,7 +59,8 @@ def raw_match_to_match_model(
         location=match_location,
         matchday=raw_match['Group']['GroupOrderID'],
         viewers=raw_match['NumberOfViewers'],
-        last_update=raw_match['LastUpdateDateTime'],
+        last_update_utc=western_europe_time_to_utc(
+            raw_match['LastUpdateDateTime']),
         finished=raw_match['MatchIsFinished'],
         team_1=team1,
         team_2=team2)
@@ -137,5 +140,16 @@ def insert_matchday_info(
     matchday = current_group['GroupOrderID']
     MatchDayMetadata.objects.create(
         matchday=matchday,
-        last_update=last_change
+        last_update=western_europe_time_to_utc(last_change)
     )
+
+
+def western_europe_time_to_utc(dt: Optional[str]):
+    if dt is None:
+        return dt
+
+    datetime_obj = datetime.strptime(dt, "%Y-%m-%dT%H:%M:%S.%f")
+    datetime_obj_as_western_europe_time = datetime_obj.replace(
+        tzinfo=timezone('Europe/Berlin'))
+    return datetime_obj_as_western_europe_time.astimezone(
+        timezone('UTC'))

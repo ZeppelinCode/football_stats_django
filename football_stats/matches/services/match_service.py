@@ -1,8 +1,9 @@
-from matches.models import Match, Goal, Location
+from matches.models import Match, Goal
 from django.db.models import Q
 from matches.services.domain import MatchInfo
-from typing import List, Tuple, Optional
+from typing import List, Tuple, Optional, Dict
 from django.core.paginator import Paginator
+from django.core.cache import cache
 
 MATCHES_PER_PAGE = 5
 
@@ -20,6 +21,16 @@ def get_all_matches_for_team(
 ) -> Tuple[List[MatchInfo], Paginator]:
     all_matches = get_all_matches_for_team_from_db(team_id)
     return page_matches(all_matches, page)
+
+
+def get_upcomming_matches() -> List[MatchInfo]:
+    current_matchday = cache.get('current_matchday').matchday
+    db_upcomming_matches = Match.objects.filter(
+        matchday=current_matchday, finished=False)
+    matches = convert_matches_to_match_info(db_upcomming_matches)
+    return sorted(
+        matches.values(),
+        key=lambda match_info: match_info.match.match_time_utc)
 
 
 def get_all_matches_from_db():
@@ -43,11 +54,19 @@ def page_matches(
     paginator = Paginator(all_matches_query_set, MATCHES_PER_PAGE)
     paged_matches = paginator.get_page(page)
 
+    matches = convert_matches_to_match_info(paged_matches)
+
+    return sorted(
+        matches.values(),
+        key=lambda match_info: match_info.match.match_time_utc), paged_matches
+
+
+def convert_matches_to_match_info(matches) -> Dict[int, MatchInfo]:
     matches = {match.id: MatchInfo(
         match=match,
         goals_team_1=[],
         goals_team_2=[])
-        for match in paged_matches}
+        for match in matches}
 
     goals = Goal.objects.filter(match_id__in=matches.keys())
     for goal in goals:
@@ -60,6 +79,4 @@ def page_matches(
         else:
             match_info.goals_team_2.append(goal)
 
-    return sorted(
-        matches.values(),
-        key=lambda match_info: match_info.match.match_time_utc), paged_matches
+    return matches

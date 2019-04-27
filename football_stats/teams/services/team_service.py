@@ -1,4 +1,4 @@
-from matches.models import Outcome
+from matches.models import (Outcome, MatchDayMetadata)
 from django.db.models import Count
 from teams.services.domain import (
     TeamRepresentation, init_team, TeamsStatsName, TeamStatsId)
@@ -46,7 +46,8 @@ def reaload_cache() -> dict:
     cache_contents = {
         'team_stats_name': team_stats_name,
         'team_stats_id': team_stats_id,
-        'leaderboard': leaderboard
+        'leaderboard': leaderboard,
+        'current_matchday': get_matchday_metadata()
     }
 
     cache.set_many(cache_contents, 300)
@@ -127,5 +128,8 @@ def add_rank_to_team_stats(leaderboard: List[TeamRepresentation]):
         team_representation.rank = i + 1
 
 
-# Warm up the cache at startup..
+def get_matchday_metadata():
+    return MatchDayMetadata.objects.order_by('-matchday')[0]
+
+
 reaload_cache()

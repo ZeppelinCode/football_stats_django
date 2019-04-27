@@ -1,0 +1,11 @@
+<div class="ui grid centered" style="margin-bottom: 40px; margin-top: 40px">
+  <div class="ui pagination menu">
+    {% for page in page_range %}
+      {% if page == '..' %}
+        <a href="" class="item disabled">{{page}}</a>
+      {% else %}
+        <a href="?page={{page}}" class="item {% if page == paginator.number %}active{% endif %}">{{page}}</a>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
