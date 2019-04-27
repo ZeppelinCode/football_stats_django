@@ -1,0 +1,62 @@
+{% for match_info in matches %}
+  <div class="ui raised segment">
+    <div class="ui three column stackable grid">
+      <div class="ui column">
+        <a href="{% url 'team' match_info.match.team_1.id%}">
+          <h3 class="header centered">
+            {{match_info.match.team_1.team_name}}
+          </h3>
+        </a>
+
+        <div class="ui column centered">
+          {% for goal in match_info.goals_team_1 %}
+            {{goal.goal_getter_name}} - {{goal.match_minute}}'
+            <br>
+          {% endfor %} 
+        </div>
+      </div>
+
+      <div class="ui column">
+        <h3 class="header centered">
+          {{match_info.score}}
+        </h3>
+        {% if match_info.match.location %}
+          <h4 class="header centered">
+              {{match_info.match.location}}
+          </h4>
+        {% endif %}
+
+        <div class="centered">
+          {{match_info.match.match_time_utc}}
+        </div>
+      </div>
+
+      <div class="ui column">
+        <a href="{% url 'team' match_info.match.team_2.id%}">
+          <h3 class="header centered">
+            {{match_info.match.team_2.team_name}}
+          </h3>
+        </a>
+
+        <div class="ui column centered">
+          {% for goal in match_info.goals_team_2 %}
+            {{goal.goal_getter_name}} - {{goal.match_minute}}'
+            <br>
+          {% endfor %} 
+        </div>
+      </div>
+    </div>
+  </div>
+{% endfor %}
+
+<div class="ui grid centered" style="margin-bottom: 40px; margin-top: 40px">
+  <div class="ui pagination menu">
+    {% for page in page_range %}
+      {% if page == '..' %}
+        <a href="" class="item disabled">{{page}}</a>
+      {% else %}
+        <a href="?page={{page}}" class="item {% if page == paginator.number %}active{% endif %}">{{page}}</a>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>

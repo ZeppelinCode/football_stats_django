@@ -4,19 +4,43 @@ from matches.services.domain import MatchInfo
 from typing import List, Tuple, Optional
 from django.core.paginator import Paginator
 
+MATCHES_PER_PAGE = 5
+
+
+def get_all_matches(
+    page: Optional[int]
+) -> Tuple[List[MatchInfo], Paginator]:
+    all_matches = get_all_matches_from_db()
+    return page_matches(all_matches, page)
+
 
 def get_all_matches_for_team(
     team_id: int,
     page: Optional[int]
 ) -> Tuple[List[MatchInfo], Paginator]:
-    all_matches = Match.objects \
+    all_matches = get_all_matches_for_team_from_db(team_id)
+    return page_matches(all_matches, page)
+
+
+def get_all_matches_from_db():
+    return Match.objects \
         .select_related('location') \
-        .filter(Q(team_1__id=team_id) | Q(team_2__id=team_id)) \
         .select_related('team_1') \
         .select_related('team_2') \
         .order_by('match_time_utc')
 
-    paginator = Paginator(all_matches, 5)
+
+def get_all_matches_for_team_from_db(team_id: int):
+    return get_all_matches_from_db() \
+        .filter(Q(team_1__id=team_id) | Q(team_2__id=team_id))
+
+
+def page_matches(
+    all_matches_query_set,
+    page: Optional[int]
+) -> Tuple[List[MatchInfo], Paginator]:
+
+    paginator = Paginator(all_matches_query_set, MATCHES_PER_PAGE)
     paged_matches = paginator.get_page(page)
 
     matches = {match.id: MatchInfo(

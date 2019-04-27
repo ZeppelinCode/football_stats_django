@@ -5,8 +5,7 @@ from teams.services.team_service import (
 from typing import List
 from teams.services.domain import TeamRepresentation
 from matches.services.match_service import get_all_matches_for_team
-
-# Create your views here.
+from matches.services.util import get_page_range
 
 
 def index(request: HttpRequest):
@@ -26,7 +25,6 @@ def team(request: HttpRequest, team_id: int):
     team = get_team(team_id)
     page = request.GET.get('page')
     matches, paginator = get_all_matches_for_team(team_id, page)
-    print(paginator.__dict__)
     return render(
         request,
         'teams/team.html',
@@ -34,6 +32,6 @@ def team(request: HttpRequest, team_id: int):
             'team': team,
             'matches': matches,
             'paginator': paginator,
-            'page_range': range(1, paginator.paginator.num_pages + 1)
+            'page_range': get_page_range(page, paginator)
         }
     )

@@ -7,7 +7,7 @@
       <a class="{% if '/' == request.path %}active{% endif %} item" href="{% url 'leaderboard' %}">Leaderboard</a>
       <a class="{% if '/team/search' == request.path %}active{% endif %} item" href="{% url 'team_search' %}">Search</a>
       <a class="item">Upcomming</a>
-      <a class="item">Season</a>
+      <a class="{% if 'season' in request.path %}active{% endif %} item" href="{% url 'season' %}">Season</a>
   </div>
 </div>
 
@@ -17,7 +17,7 @@
     <a class="{% if '/' == request.path %}active{% endif %} item" href="{% url 'leaderboard' %}">Leaderboard</a>
     <a class="{% if '/team/search' == request.path %}active{% endif %} item" href="{% url 'team_search' %}">Search</a>
     <a class="item">Upcomming</a>
-    <a class="item">Season</a>
+    <a class="{% if 'season' in request.path %}active{% endif %} item" href="{% url 'season' %}">Season</a>
   </div>
 </div>
 
@@ -26,5 +26,5 @@
   <a class="{% if '/' == request.path %}active{% endif %} item" href="{% url 'leaderboard' %}">Leaderboard</a>
   <a class="{% if '/team/search' == request.path %}active{% endif %} item" href="{% url 'team_search' %}">Search</a>
   <a class="item">Upcomming</a>
-  <a class="item">Season</a>
+  <a class="{% if 'season' in request.path %}active{% endif %} item" href="{% url 'season' %}">Season</a>
 </div>
