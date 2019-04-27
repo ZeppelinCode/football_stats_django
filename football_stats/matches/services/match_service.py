@@ -3,7 +3,7 @@ from django.db.models import Q
 from matches.services.domain import MatchInfo
 from typing import List, Tuple, Optional, Dict
 from django.core.paginator import Paginator
-from django.core.cache import cache
+from teams.services.team_service import get_cached_value
 
 MATCHES_PER_PAGE = 5
 
@@ -24,7 +24,7 @@ def get_all_matches_for_team(
 
 
 def get_upcomming_matches() -> List[MatchInfo]:
-    current_matchday = cache.get('current_matchday').matchday
+    current_matchday = get_cached_value('current_matchday').matchday
     db_upcomming_matches = Match.objects.filter(
         matchday=current_matchday, finished=False)
     matches = convert_matches_to_match_info(db_upcomming_matches)

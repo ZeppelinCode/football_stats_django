@@ -14,3 +14,4 @@ delete matches_matchday_metadata;
 docker run --name my-memcache -d -p 11211:11211 memcached
 
 https://bitbucket.org/anythingabout/openligadb-samples/overview/
+python manage.py process_tasks

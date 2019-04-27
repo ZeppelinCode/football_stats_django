@@ -32,13 +32,13 @@ def get_team(team_id: int) -> TeamRepresentation:
 def get_cached_value(key: str):
     value = cache.get(key)
     if value is None:
-        cache_contents = reaload_cache()
+        cache_contents = reload_cache()
         return cache_contents[key]
 
     return value
 
 
-def reaload_cache() -> dict:
+def reload_cache() -> dict:
     team_stats_name = build_team_stats_name(get_all_outcomes())
     leaderboard = calculate_leaderboard(team_stats_name)
     add_rank_to_team_stats(leaderboard)
@@ -130,6 +130,3 @@ def add_rank_to_team_stats(leaderboard: List[TeamRepresentation]):
 
 def get_matchday_metadata():
     return MatchDayMetadata.objects.order_by('-matchday')[0]
-
-
-reaload_cache()
