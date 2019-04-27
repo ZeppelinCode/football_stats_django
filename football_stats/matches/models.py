@@ -8,7 +8,15 @@ class Location(models.Model):
     stadium = models.CharField(max_length=255, null=True)
 
     def __str__(self):
-        return "{}:{}".format(str(self.city), str(self.stadium))
+        city = self.city.strip() if self.city else self.city
+        stadium = self.stadium.strip() if self.stadium else self.stadium
+        if city and stadium:
+            return "{}, {}".format(stadium, city)
+        if not stadium and not city:
+            return 'Unknown location'
+        if not stadium:
+            return self.city
+        return self.stadium
 
 
 class Match(models.Model):

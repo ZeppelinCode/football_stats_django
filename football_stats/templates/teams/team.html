@@ -29,58 +29,67 @@
 <br>
 
 <h2 class="header centered">Matches</h2>
-<div class="ui divider"></div>
 {% for match_info in matches %}
-  {% comment %} Teams {% endcomment %}
-  <div class="ui two column grid">
-    <div class="ui column">
-      <h3 class="header centered">
-        {{match_info.match.team_1.team_name}}
-      </h3>
-    </div>
-    <div class="ui column">
-      <h3 class="header centered">
-        {{match_info.match.team_2.team_name}}
-      </h3>
+  <div class="ui raised segment">
+    <div class="ui three column grid">
+      <div class="ui column">
+        <a href="{% url 'team' match_info.match.team_1.id%}">
+          <h3 class="header centered">
+            {{match_info.match.team_1.team_name}}
+          </h3>
+        </a>
+
+        <div class="ui column centered">
+          {% for goal in match_info.goals_team_1 %}
+            {{goal.goal_getter_name}} - {{goal.match_minute}}'
+            <br>
+          {% endfor %} 
+        </div>
+      </div>
+
+      <div class="ui column">
+        <h3 class="header centered">
+          {{match_info.score}}
+        </h3>
+        {% if match_info.match.location %}
+          <h4 class="header centered">
+              {{match_info.match.location}}
+          </h4>
+        {% endif %}
+
+        <div class="centered">
+          {{match_info.match.match_time_utc}}
+        </div>
+      </div>
+
+      <div class="ui column">
+        <a href="{% url 'team' match_info.match.team_2.id%}">
+          <h3 class="header centered">
+            {{match_info.match.team_2.team_name}}
+          </h3>
+        </a>
+
+        <div class="ui column centered">
+          {% for goal in match_info.goals_team_2 %}
+            {{goal.goal_getter_name}} - {{goal.match_minute}}'
+            <br>
+          {% endfor %} 
+        </div>
+      </div>
     </div>
   </div>
-
-  <h4 class="header centered">
-    {{match_info.match.location.stadium}}, {{match_info.match.location.city}}
-  </h4>
-
-  <div class="centered">
-    {{match_info.match.match_time_utc}}
-  </div>
-  <br>
-
-  <div class="ui two column grid">
-    <div class="ui column centered">
-      {% for goal in match_info.goals_team_1 %}
-        {{goal.goal_getter_name}} - {{goal.match_minute}}'
-        <br>
-      {% endfor %} 
-    </div>
-    <div class="ui column centered">
-      {% for goal in match_info.goals_team_2 %}
-        {{goal.goal_getter_name}} - {{goal.match_minute}}'
-        <br>
-      {% endfor %} 
-    </div>
-  </div>
-  <div class="ui divider"></div>
 {% endfor %}
 
 <div class="ui grid centered" style="margin-bottom: 40px; margin-top: 40px">
   <div class="ui pagination menu">
     {% if paginator.has_previous %}
-      <a href="" class="item">Prev</a>
+      <a href="?page={{ paginator.previous_page_number }}" class="item">Prev</a>
     {% endif %}
     {% for page in page_range %}
-      <a href="" class="item {% if page == paginator.number %}active{% endif %}">{{page}}</a>
+      <a href="?page={{page}}" class="item {% if page == paginator.number %}active{% endif %}">{{page}}</a>
     {% endfor %}
     {% if paginator.has_next %}
-      <a href="" class="item">Next</a>
+      <a href="?page={{ paginator.next_page_number }}" class="item">Next</a>
     {% endif %}
   </div>
 </div>

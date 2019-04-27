@@ -1,13 +1,13 @@
 from matches.models import Match, Goal, Location
 from django.db.models import Q
 from matches.services.domain import MatchInfo
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 from django.core.paginator import Paginator
 
 
 def get_all_matches_for_team(
     team_id: int,
-    page: int
+    page: Optional[int]
 ) -> Tuple[List[MatchInfo], Paginator]:
     all_matches = Match.objects \
         .select_related('location') \

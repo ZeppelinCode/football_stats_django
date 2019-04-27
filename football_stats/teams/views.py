@@ -24,7 +24,8 @@ def team_search(request: HttpRequest):
 
 def team(request: HttpRequest, team_id: int):
     team = get_team(team_id)
-    matches, paginator = get_all_matches_for_team(team_id, 3)
+    page = request.GET.get('page')
+    matches, paginator = get_all_matches_for_team(team_id, page)
     print(paginator.__dict__)
     return render(
         request,
