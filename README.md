@@ -12,8 +12,9 @@ Presently it only works with one football season - 2018 but its functionality ca
 ## Demo Set up
 In order to run this demo, you need to have docker and docker-compose installed on your machine.
 
-Clone this repo and run `docker-compose up -d`
-in the root folder.
+1. Clone this repo.
+2. run `mkdir static` in the root folder of the repo.
+3. run `docker-compose up -d` in the root folder of the repo.
 
 The application will start up in a couple of 
 minutes after it has:
