@@ -1,5 +1,5 @@
 from teams.data_helpers import team_downloader
-from matches.data_helpers import match_downloader
+from matches.services import network_data_match_parser
 from matches.providers import match_provider
 import traceback
 
@@ -9,20 +9,14 @@ try:
 
     matches = match_provider.pull_info_for_all_matches(2018)
 
-    locations_id_map = match_downloader.insert_locations_into_database(matches)
-    matches_id_map = match_downloader.insert_matches_into_database(
+    locations_id_map = network_data_match_parser.insert_locations_into_database(
+        matches)
+    matches_id_map = network_data_match_parser.insert_matches_into_database(
         matches, locations_id_map, teams_id_map)
-    match_downloader.insert_goals_into_database(
+    network_data_match_parser.insert_goals_into_database(
         matches, matches_id_map, teams_id_map)
 
-    match_day_metadata = match_provider.pull_matchday_metadata()
-    last_update_for_matchday = match_provider\
-        .pull_current_matchday_last_change(
-            2018,
-            match_day_metadata['GroupOrderID']
-        )
-    match_downloader.insert_matchday_info(
-        match_day_metadata, last_update_for_matchday)
+    match_provider.pull_current_match_day_metadata().save()
 
 
 except Exception as e:

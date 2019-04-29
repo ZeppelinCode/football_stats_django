@@ -1,10 +1,9 @@
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Tuple
 from matches.models import (Match, Location, Goal,
-                            Outcome, MatchDayMetadata)
+                            Outcome)
 from teams.models import Team
 from itertools import groupby
-from pytz import timezone
-from datetime import datetime
+from util.util import western_europe_time_to_utc
 
 
 def extract_locations(
@@ -83,8 +82,8 @@ def insert_goals_into_database(
     raw_matches_to_model_matches: Dict[int, Match],
     raw_team_to_model_team: Dict[int, Team],
 ):
-    all_goals = []
-    all_outcomes = []
+    all_goals: List[Goal] = []
+    all_outcomes: List[Outcome] = []
     for raw_match in raw_matches:
 
         raw_goals = raw_match['Goals']
@@ -92,64 +91,77 @@ def insert_goals_into_database(
         team2 = raw_team_to_model_team[raw_match['Team2']['TeamId']]
         match = raw_matches_to_model_matches[raw_match['MatchID']]
 
-        score_team1 = 0
-        score_team2 = 0
-        for raw_goal in raw_goals:
-            scoring_team = None
-            new_score_team1 = raw_goal['ScoreTeam1']
-            new_score_team2 = raw_goal['ScoreTeam2']
-            if new_score_team1 > score_team1:
-                scoring_team = team1
-                score_team1 = new_score_team1
-            else:
-                scoring_team = team2
-                score_team2 = new_score_team2
+        match_goals, score_team_1, score_team_2 = transform_goals(
+            raw_goals,
+            team1.id,
+            team2.id,
+            match.id
+        )
+        match_outcomes = get_outcomes(
+            match, team1, team2, score_team_1, score_team_2)
 
-            goal = Goal(
-                external_id=raw_goal['GoalID'],
-                goal_getter_name=raw_goal['GoalGetterName'],
-                match=match,
-                match_minute=raw_goal['MatchMinute'],
-                team=scoring_team)
-            all_goals.append(goal)
-
-        if score_team1 > score_team2:
-            all_outcomes.append(
-                Outcome(match=match, team=team1, outcome_type='win'))
-            all_outcomes.append(
-                Outcome(match=match, team=team2, outcome_type='loss'))
-        elif score_team1 < score_team2:
-            all_outcomes.append(
-                Outcome(match=match, team=team1, outcome_type='loss'))
-            all_outcomes.append(
-                Outcome(match=match, team=team2, outcome_type='win'))
-        else:
-            all_outcomes.append(
-                Outcome(match=match, team=team1, outcome_type='draw'))
-            all_outcomes.append(
-                Outcome(match=match, team=team2, outcome_type='draw'))
+        all_goals += match_goals
+        all_outcomes += match_outcomes
 
     Goal.objects.bulk_create(all_goals)
     Outcome.objects.bulk_create(all_outcomes)
 
 
-def insert_matchday_info(
-    current_group,
-    last_change: str
-):
-    matchday = current_group['GroupOrderID']
-    MatchDayMetadata.objects.create(
-        matchday=matchday,
-        last_update=western_europe_time_to_utc(last_change)
-    )
+def transform_goals(
+    raw_goals,
+    internal_team_1_id: int,
+    internal_team_2_id: int,
+    internal_match_id: int
+) -> Tuple[List[Goal], int, int]:
+    """
+    Converts a list of response goals to a list of Goal models.
+    Also calculates the score for each team.
+    """
+    goals = []
+    score_team_1 = 0
+    score_team_2 = 0
+    for goal in raw_goals:
+        team_that_scored = internal_team_2_id
+        new_score_team_1 = goal['ScoreTeam1']
+        new_score_team_2 = goal['ScoreTeam2']
+        if new_score_team_1 > score_team_1:
+            team_that_scored = internal_team_1_id
+            score_team_1 = new_score_team_1
+        else:
+            score_team_2 = new_score_team_2
+        goals.append(
+            Goal(
+                external_id=goal['GoalID'],
+                goal_getter_name=goal['GoalGetterName'],
+                match_id=internal_match_id,
+                match_minute=goal['MatchMinute'],
+                team_id=team_that_scored
+            )
+        )
+
+    return goals, score_team_1, score_team_2
 
 
-def western_europe_time_to_utc(dt: Optional[str]):
-    if dt is None:
-        return dt
-
-    datetime_obj = datetime.strptime(dt, "%Y-%m-%dT%H:%M:%S.%f")
-    datetime_obj_as_western_europe_time = datetime_obj.replace(
-        tzinfo=timezone('Europe/Berlin'))
-    return datetime_obj_as_western_europe_time.astimezone(
-        timezone('UTC'))
+def get_outcomes(
+        match: Match,
+        team1: Team,
+        team2: Team,
+        score_team1: int,
+        score_team2: int) -> List[Outcome]:
+    all_outcomes = []
+    if score_team1 > score_team2:
+        all_outcomes.append(
+            Outcome(match=match, team=team1, outcome_type='win'))
+        all_outcomes.append(
+            Outcome(match=match, team=team2, outcome_type='loss'))
+    elif score_team1 < score_team2:
+        all_outcomes.append(
+            Outcome(match=match, team=team1, outcome_type='loss'))
+        all_outcomes.append(
+            Outcome(match=match, team=team2, outcome_type='win'))
+    else:
+        all_outcomes.append(
+            Outcome(match=match, team=team1, outcome_type='draw'))
+        all_outcomes.append(
+            Outcome(match=match, team=team2, outcome_type='draw'))
+    return all_outcomes

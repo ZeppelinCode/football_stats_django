@@ -40,7 +40,9 @@ class Match(models.Model):
         ]
 
     def __str__(self) -> str:
-        return "{}:{}".format(str(self.team_1.team_name), str(self.team_2.team_name))
+        return "{}:{}".format(
+            str(self.team_1.team_name),
+            str(self.team_2.team_name))
 
 
 class Goal(models.Model):
@@ -56,6 +58,11 @@ class Goal(models.Model):
             str(self.goal_getter_name),
             self.match_minute)
 
+    class Meta:
+        indexes = [
+            models.Index(fields=['match']),
+        ]
+
 
 class Outcome(models.Model):
     match = models.ForeignKey(Match, on_delete=models.PROTECT)
@@ -70,7 +77,7 @@ class Outcome(models.Model):
         ]
 
     def __str__(self):
-        return "{}:{}".format(self.team.team_name, self.outcome)
+        return "{}:{}".format(self.team.team_name, self.outcome_type)
 
 
 class MatchDayMetadata(models.Model):

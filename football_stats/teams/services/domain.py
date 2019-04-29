@@ -25,5 +25,5 @@ def init_team(id: int, team_name: str) -> TeamRepresentation:
     )
 
 
-TeamsStatsName = Dict[str, TeamRepresentation]
-TeamStatsId = Dict[int, TeamRepresentation]
+NameToTeamStats = Dict[str, TeamRepresentation]
+IdToTeamStats = Dict[int, TeamRepresentation]

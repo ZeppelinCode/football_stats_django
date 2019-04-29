@@ -25,9 +25,14 @@ def get_all_matches_for_team(
 
 def get_upcomming_matches() -> List[MatchInfo]:
     current_matchday = get_cached_value('current_matchday').matchday
-    db_upcomming_matches = Match.objects.filter(
-        matchday=current_matchday, finished=False)
+    db_upcomming_matches = list(Match.objects.filter(
+        matchday=current_matchday, finished=False))
+    if len(db_upcomming_matches) == 0:
+        db_upcomming_matches = Match.objects.filter(
+            matchday=current_matchday+1, finished=False)
+
     matches = convert_matches_to_match_info(db_upcomming_matches)
+
     return sorted(
         matches.values(),
         key=lambda match_info: match_info.match.match_time_utc)
