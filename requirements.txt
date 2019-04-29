@@ -3,6 +3,8 @@ autopep8==1.4.3
 certifi==2019.3.9
 chardet==3.0.4
 Django==2.2
+django-background-tasks==1.2.0
+django-compat==1.0.15
 entrypoints==0.3
 flake8==3.7.7
 idna==2.8
@@ -20,6 +22,7 @@ pyflakes==2.1.1
 pylint==2.3.1
 pylint-django==2.0.6
 pylint-plugin-utils==0.5
+python-dateutil==2.8.0
 python-memcached==1.59
 pytz==2019.1
 requests==2.21.0

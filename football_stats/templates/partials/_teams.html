@@ -2,7 +2,7 @@
   <thead>
     <tr>
       <th>Rank</th>
-      <th>Team name</th>
+      <th>Team</th>
       <th>Wins</th>
       <th>Losses</th>
       <th>Draws</th>
@@ -14,7 +14,10 @@
       <tr>
         <td data-label="Rank">{{team.rank}}</td>
         <td data-label="Team name">
-          <a href="{% url 'team' team.id %}">{{team.team_name}}</a>
+          <a href="{% url 'team' team.id %}">
+            <img class="ui mini left floated image" src="{{team.team_icon_url}}" alt="{{team.team_name}} icon" />
+            {{team.team_name}}
+          </a>
         </td>
         <td data-label="Wins">{{team.win}}</td>
         <td data-label="Losses">{{team.loss}}</td>

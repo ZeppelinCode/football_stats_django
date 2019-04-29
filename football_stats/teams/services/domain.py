@@ -6,6 +6,7 @@ from typing import Dict
 class TeamRepresentation:
     id: int
     team_name: str
+    team_icon_url: str
     rank: int
     win: int
     loss: int
@@ -13,10 +14,15 @@ class TeamRepresentation:
     points: int
 
 
-def init_team(id: int, team_name: str) -> TeamRepresentation:
+def init_team(
+    id: int,
+    team_name: str,
+    team_icon_url: str
+) -> TeamRepresentation:
     return TeamRepresentation(
         id,
         team_name,
+        team_icon_url,
         0,
         0,
         0,

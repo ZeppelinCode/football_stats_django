@@ -8,7 +8,7 @@ import traceback
 try:
     teams = pull_info_for_all_teams(2018)
     teams_id_map = insert_into_database(teams)
-    j
+
     print('Sleeping for 5 seconds after the team request')
     time.sleep(5)
 

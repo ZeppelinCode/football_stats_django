@@ -69,6 +69,7 @@ def get_all_outcomes():
     return Outcome.objects.values(
         'team__team_name',
         'team_id',
+        'team__team_icon_url',
         'outcome_type'
     ).annotate(outcome_type_count=Count('outcome_type'))
 
@@ -81,8 +82,9 @@ def build_name_to_team_stats(outcomes) -> NameToTeamStats:
     team_performances: NameToTeamStats = {}
     for outcome in outcomes:
         team_name = outcome['team__team_name']
+        team_icon_url = outcome['team__team_icon_url']
         team_performance = team_performances.get(
-            team_name, init_team(outcome['team_id'], team_name))
+            team_name, init_team(outcome['team_id'], team_name, team_icon_url))
         setattr(team_performance,
                 outcome['outcome_type'], outcome['outcome_type_count'])
         team_performances[team_name] = team_performance

@@ -18,7 +18,13 @@
 
       <div class="ui column">
         <h3 class="header centered">
+          <img src="{{match_info.match.team_1.team_icon_url}}" alt="{{match_info.match.team_1.team_name}} team icon" 
+            class="ui mini image left floated" />
+
           {{match_info.score}}
+          
+          <img src="{{match_info.match.team_2.team_icon_url}}" alt="{{match_info.match.team_2.team_name}} team icon"
+            class="ui mini image right floated" />
         </h3>
         {% if match_info.match.location %}
           <h4 class="header centered">
