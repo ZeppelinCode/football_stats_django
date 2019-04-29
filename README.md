@@ -24,6 +24,16 @@ The application will become available on localhost:8000. If you get a 502 respon
 from nginx, pip is probably still installing
 dependencies.
 
+You can also use the admin console to add new data at localhost:8000/admin using these credentials:
+
+username: superuser
+
+password: very_secure_password
+
+Keep in mind that changes you make might not be immediately visible (there's a 5 minute cache period for team statistics such as wins, losses, points, etc).
+
+
+
 # Dev Set Up
 If you'd like to work on this app, copy the very_secure_prod_settings.py file into fooball_stats/football_stats/local_settings.py and enter the db credentials.
 
@@ -39,9 +49,11 @@ You also need to have memcached installed and running.
 6. The background data sync job should ideally be in a separate container.
 
 ## Copy paste database cleanup if needed
+```sql
 delete from teams_team;
 delete from matches_location;
 delete from matches_match;
 delete from matches_goal;
 delete from matches_outcome;
 delete from matches_matchday_metadata;
+```
