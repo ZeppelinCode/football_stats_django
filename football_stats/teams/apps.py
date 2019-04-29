@@ -9,5 +9,5 @@ class TeamsConfig(AppConfig):
         try:
             from teams.services.team_service import reload_cache
             reload_cache()
-        except:
-            pass
+        except Exception as e:
+            print(e)

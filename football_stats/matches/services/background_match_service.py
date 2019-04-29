@@ -117,11 +117,10 @@ def update_matchday(
             current_matchday.save()
 
 
-def run_updates():
-    update_matches_if_necessary.now()
-
-
-def poll_for_mach_data():
+def poll_for_new_match_data():
     if not Task.objects.filter(verbose_name='poll_for_mach_data').exists():
-        update_matches_if_necessary(repeat=Task.HOURLY, repeat_until=None,
-                                    verbose_name='poll_for_mach_data')
+        update_matches_if_necessary(
+            repeat=Task.HOURLY,
+            repeat_until=None,
+            verbose_name='poll_for_mach_data'
+        )

@@ -1,0 +1,25 @@
+version: '3'
+services:
+    football_stats:
+        build: .
+        links:
+            - postgres
+            - memcached
+        volumes:
+            - ./static:/football_stats/static
+    postgres:
+        build: docker_build_scripts/postgres
+        ports:
+            - 5433:5432
+    memcached:
+        image: memcached
+    nginx:
+        build: docker_build_scripts/nginx
+        links: 
+            - football_stats
+        ports:
+            - 8000:80
+        volumes:
+            - ./static:/www/static/
+
+    
