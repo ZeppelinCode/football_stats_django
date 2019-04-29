@@ -8,3 +8,7 @@ football_stats/matches/providers/matches_cache.py
 db.sqlite3
 media
 .vscode
+static/admin/
+static/themes/
+static/*.js
+static/*.css
