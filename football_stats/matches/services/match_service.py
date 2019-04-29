@@ -3,19 +3,19 @@ from django.db.models import Q
 from matches.services.domain import MatchInfo
 from typing import List, Tuple, Optional, Dict
 from django.core.paginator import Paginator
-from teams.services.team_service import get_cached_value
+from teams.services.team_service import get_cached_value, CURRENT_MATCHDAY
 
 MATCHES_PER_PAGE = 5
 
 
-def get_all_matches(
+def get_all_matches_paginated(
     page: Optional[int]
 ) -> Tuple[List[MatchInfo], Paginator]:
     all_matches = get_all_matches_from_db()
     return page_matches(all_matches, page)
 
 
-def get_all_matches_for_team(
+def get_team_matches_paginated(
     team_id: int,
     page: Optional[int]
 ) -> Tuple[List[MatchInfo], Paginator]:
@@ -24,10 +24,19 @@ def get_all_matches_for_team(
 
 
 def get_upcomming_matches() -> List[MatchInfo]:
-    current_matchday = get_cached_value('current_matchday').matchday
-    db_upcomming_matches = Match.objects.filter(
-        matchday=current_matchday, finished=False)
+    current_matchday = get_cached_value(CURRENT_MATCHDAY).matchday
+    db_upcomming_matches = list(Match.objects.filter(
+        matchday=current_matchday, finished=False))
+
+    # If there are no upcomming matches for this matchday,
+    # the matchday hasn't been updated yet...
+    # Show the matches for the next matchday
+    if len(db_upcomming_matches) == 0:
+        db_upcomming_matches = Match.objects.filter(
+            matchday=current_matchday+1, finished=False)
+
     matches = convert_matches_to_match_info(db_upcomming_matches)
+
     return sorted(
         matches.values(),
         key=lambda match_info: match_info.match.match_time_utc)

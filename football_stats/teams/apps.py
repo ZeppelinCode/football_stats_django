@@ -4,7 +4,10 @@ from django.apps import AppConfig
 class TeamsConfig(AppConfig):
     name = 'teams'
 
-    # warm up the cache on startup
     def ready(self):
-        from teams.services.team_service import reaload_cache
-        reaload_cache()
+        # This will fail if the db does not exist (makemigrations)
+        try:
+            from teams.services.team_service import reload_cache
+            reload_cache()
+        except:
+            pass

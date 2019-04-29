@@ -9,7 +9,7 @@ delete from matches_location;
 delete from matches_match;
 delete from matches_goal;
 delete from matches_outcome;
-delete matches_matchday_metadata;
+delete from matches_matchday_metadata;
 
 docker run --name my-memcache -d -p 11211:11211 memcached
 

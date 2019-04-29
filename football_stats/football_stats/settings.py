@@ -24,8 +24,8 @@ INSTALLED_APPS = [
     #
     'background_task',
     #
-    'teams',
-    'matches'
+    'teams.apps.TeamsConfig',
+    'matches.apps.MatchesConfig'
 ]
 
 MIDDLEWARE = [

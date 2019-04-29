@@ -1,8 +1,6 @@
 from dataclasses import dataclass
-from matches.models import Match, Location, Goal
-from teams.models import Team
+from matches.models import Match, Goal
 from typing import List
-from django.core.paginator import Paginator
 from django.utils import timezone
 
 

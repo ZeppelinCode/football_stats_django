@@ -4,7 +4,7 @@ from teams.services.team_service import (
     get_leaderboard, get_teams_by_name_similarity, get_team)
 from typing import List
 from teams.services.domain import TeamRepresentation
-from matches.services.match_service import get_all_matches_for_team
+from matches.services.match_service import get_team_matches_paginated
 from matches.services.util import get_page_range
 
 
@@ -24,7 +24,7 @@ def team_search(request: HttpRequest):
 def team(request: HttpRequest, team_id: int):
     team = get_team(team_id)
     page = request.GET.get('page')
-    matches, paginator = get_all_matches_for_team(team_id, page)
+    matches, paginator = get_team_matches_paginated(team_id, page)
     return render(
         request,
         'teams/team.html',

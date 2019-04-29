@@ -11,7 +11,7 @@ def get_page_range(s_page: Optional[str], paginator: Paginator):
     try:
         page = int(s_page)
     except Exception:
-        print('page conversion error')
+        pass
 
     if page is None:
         page = 1
@@ -41,6 +41,3 @@ def truncated_page_range(page: int, paginator: Paginator):
 
     yield '..'
     yield num_pages
-
-# https://www.openligadb.de/api/getmatchdata/bl1/2018/30
-# https://www.openligadb.de/api/getlastchangedate/bl1/2018/31
